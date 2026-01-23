@@ -1,0 +1,34 @@
+# Maven / Java
+target/
+*.class
+*.log
+
+# IDE files
+.idea/
+.project
+.classpath
+.settings/
+*.iml
+
+# Build outputs
+*.jar
+*.war
+*.ear
+
+# OS files
+.DS_Store
+
+# Local data
+data/
+
+# Spring Boot
+spring.log
+
+# Coverage / reports
+*.exec
+*.csv
+*.out
+*.html
+
+# IntelliJ modules
+out/
