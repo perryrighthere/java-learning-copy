@@ -28,7 +28,6 @@ spring.log
 *.exec
 *.csv
 *.out
-*.html
 
 # IntelliJ modules
 out/

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Teaching Demo</title>
+    <link rel="stylesheet" href="/assets/teaching-demo.css">
+</head>
+<body>
+<main class="page">
+    <header class="hero">
+        <p class="eyebrow">Spring Boot Teaching Companion</p>
+        <h1>Kanban Weekly Capability Demo</h1>
+        <p class="subtitle">One page for classroom live demos of Week 1 and Week 2 behavior.</p>
+        <div class="week-switch" role="tablist" aria-label="Week selector">
+            <button id="tab-week1" class="week-tab active" data-week="week1" role="tab" aria-selected="true">Week 1</button>
+            <button id="tab-week2" class="week-tab" data-week="week2" role="tab" aria-selected="false">Week 2</button>
+        </div>
+    </header>
+
+    <section id="week1" class="week-panel active" role="tabpanel" aria-labelledby="tab-week1">
+        <article class="card">
+            <h2>Health Check</h2>
+            <p>Verifies the app is up without authentication.</p>
+            <button id="week1-health-btn">GET /api/health</button>
+            <pre id="week1-health-output" class="output">Press the button to call the endpoint.</pre>
+        </article>
+
+        <article class="card">
+            <h2>Create User</h2>
+            <p>Week 1 identity bootstrap, now with password input required by Week 2 auth.</p>
+            <form id="week1-user-form" class="stack">
+                <label>Email
+                    <input id="week1-email" type="email" value="student1@kanban.local" required>
+                </label>
+                <label>Display Name
+                    <input id="week1-display-name" type="text" value="Student One" required>
+                </label>
+                <label>Password
+                    <input id="week1-password" type="password" value="Password123!" minlength="8" required>
+                </label>
+                <button type="submit">POST /api/v1/users</button>
+            </form>
+            <pre id="week1-user-output" class="output">Submit the form to create a user.</pre>
+        </article>
+    </section>
+
+    <section id="week2" class="week-panel" role="tabpanel" aria-labelledby="tab-week2">
+        <article class="card">
+            <h2>JWT Login + Refresh</h2>
+            <p>Uses seeded users: alice/admin, bob/member, guest/guest. Password: Password123!</p>
+            <div class="inline-actions">
+                <button class="preset-btn" data-email="alice@kanban.local">Use Alice</button>
+                <button class="preset-btn" data-email="bob@kanban.local">Use Bob</button>
+                <button class="preset-btn" data-email="guest@kanban.local">Use Guest</button>
+            </div>
+            <form id="week2-login-form" class="stack">
+                <label>Email
+                    <input id="week2-email" type="email" value="alice@kanban.local" required>
+                </label>
+                <label>Password
+                    <input id="week2-password" type="password" value="Password123!" minlength="8" required>
+                </label>
+                <button type="submit">POST /api/v1/auth/login</button>
+            </form>
+            <div class="inline-actions">
+                <button id="week2-refresh-btn">POST /api/v1/auth/refresh</button>
+                <span id="week2-auth-state" class="badge">Not logged in</span>
+            </div>
+            <pre id="week2-auth-output" class="output">Login response appears here.</pre>
+        </article>
+
+        <article class="card">
+            <h2>Board RBAC Demo</h2>
+            <p>Try board read and membership write. Guest should get 403 on write.</p>
+            <form id="week2-board-form" class="stack">
+                <label>Board ID
+                    <input id="week2-board-id" type="number" value="1" min="1" required>
+                </label>
+                <div class="inline-actions">
+                    <button type="button" id="week2-board-btn">GET /api/v1/boards/{id}</button>
+                    <button type="button" id="week2-members-btn">GET /api/v1/boards/{id}/members</button>
+                </div>
+            </form>
+            <form id="week2-member-write-form" class="stack">
+                <label>Target User ID
+                    <input id="week2-target-user" type="number" value="2" min="1" required>
+                </label>
+                <label>Role
+                    <select id="week2-role">
+                        <option>ADMIN</option>
+                        <option selected>MEMBER</option>
+                        <option>GUEST</option>
+                    </select>
+                </label>
+                <button type="submit">POST /api/v1/boards/{id}/members</button>
+            </form>
+            <pre id="week2-board-output" class="output">Board and membership responses appear here.</pre>
+        </article>
+    </section>
+</main>
+<script src="/assets/teaching-demo.js"></script>
+</body>
+</html>
