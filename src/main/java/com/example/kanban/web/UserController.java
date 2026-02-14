@@ -1,5 +1,6 @@
 package com.example.kanban.web;
 
+import com.example.kanban.auth.AuthenticatedUser;
 import com.example.kanban.domain.User;
 import com.example.kanban.service.UserService;
 import com.example.kanban.web.dto.CreateUserRequest;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-@Tag(name = "Users", description = "User bootstrap endpoints (Week 1 skeleton)")
+@Tag(name = "Users", description = "User signup and profile endpoints")
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Create a user")
+    @Operation(summary = "Create a user with a bcrypt-hashed password")
     @PostMapping
     public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest request) {
         User user = userService.create(request);
@@ -33,8 +35,15 @@ public class UserController {
 
     @Operation(summary = "Fetch a user by id")
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> get(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> get(@PathVariable("id") Long id) {
         User user = userService.getById(id);
+        return ResponseEntity.ok(new UserResponse(user.getId(), user.getEmail(), user.getDisplayName()));
+    }
+
+    @Operation(summary = "Fetch current authenticated user")
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> me(@AuthenticationPrincipal AuthenticatedUser currentUser) {
+        User user = userService.getById(currentUser.id());
         return ResponseEntity.ok(new UserResponse(user.getId(), user.getEmail(), user.getDisplayName()));
     }
 }

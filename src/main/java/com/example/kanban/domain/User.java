@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Application user. Authentication will be added later; Week 1 keeps only identity attributes.
+ * Application user with login identity and hashed credential.
  */
 @Getter
 @Setter
@@ -34,4 +34,9 @@ public class User extends BaseEntity {
     @Size(max = 120)
     @Column(name = "display_name", nullable = false, length = 120)
     private String displayName;
+
+    @NotBlank
+    @Size(max = 255)
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
 }

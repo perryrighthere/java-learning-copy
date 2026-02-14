@@ -31,3 +31,15 @@ management:
 logging:
   level:
     org.springframework: INFO
+
+app:
+  jwt:
+    secret: "change-this-32-char-minimum-secret-key"
+    issuer: "kanban-realtime"
+    access-ttl: PT15M
+    refresh-ttl: P7D
+  security:
+    cors:
+      allowed-origins:
+        - "http://localhost:3000"
+        - "http://localhost:5173"
