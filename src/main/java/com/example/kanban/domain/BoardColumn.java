@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,4 +41,7 @@ public class BoardColumn extends BaseEntity {
     @NotNull
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal position;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 }

@@ -1,75 +1,99 @@
-## Kanban Realtime Backend (Week 1 + Week 2)
+## Kanban Realtime Backend (Week 4)
 
-Spring Boot 3 / Java 21 teaching backend for a realtime Kanban project.
-- Week 1 delivered skeleton/domain + Flyway + validation + OpenAPI stub.
-- Week 2 delivered JWT auth/refresh, bcrypt password hashing, and board RBAC.
+Spring Boot 3 / Java 21 backend with JWT auth, RBAC, core CRUD, and board-scoped realtime updates over SSE backed by Redis pub/sub.
 
 ### Prerequisites
 - JDK 21+
 - Maven 3.9+
+- Docker (for local Redis in Week 4 realtime mode)
 
-### Run locally (H2 file database)
+### Start Redis (local)
+```bash
+docker run --rm -p 6379:6379 redis:7.2-alpine
+```
+
+### Run the app
 ```bash
 mvn clean spring-boot:run
 ```
-The app uses an H2 file database at `./data/kanban-db` with Flyway migrations applied automatically.
 
-### Teaching frontend demo
-- Open `http://localhost:8080/teaching-demo.html`
-- Default root `http://localhost:8080/` redirects to the teaching demo page.
-- The page includes:
-  - Week 1 panel: health check + user creation
-  - Week 2 panel: login/refresh + board read/member RBAC actions
+Default runtime:
+- Port: `8080`
+- DB: H2 file database at `./data/kanban-db`
+- Flyway migrations: `V1`..`V3`
+- Realtime: SSE endpoint with Redis pub/sub relay
 
-### Tests
+### Run tests
 ```bash
 mvn test
 ```
+
+### Configuration notes
+Main config: `src/main/resources/application.yml`
+
+Key properties:
+- `app.jwt.secret`
+- `app.jwt.issuer`
+- `app.jwt.access-ttl`
+- `app.jwt.refresh-ttl`
+- `app.security.cors.allowed-origins`
+- `app.realtime.redis-enabled`
+- `app.realtime.redis-channel-prefix`
+- `app.realtime.sse-timeout`
+- `spring.data.redis.host`
+- `spring.data.redis.port`
+
+`X-Client-Id` request header is used for realtime echo suppression.
 
 ### API/docs entry points
 - Health: `GET http://localhost:8080/api/health`
 - OpenAPI UI: `http://localhost:8080/swagger-ui.html`
 - OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+- Realtime SSE: `GET http://localhost:8080/api/v1/boards/{boardId}/events?clientId={id}`
 
-### Week 1 quick check (preserved)
-This section is kept to preserve the Week 1 teaching progression.
-- Create user (Week 1 payload): `POST http://localhost:8080/api/v1/users` with JSON `{"email":"alice@example.com","displayName":"Alice"}`
-- Create board (Week 1 payload): `POST http://localhost:8080/api/v1/boards` with JSON `{"name":"Team Board","ownerId":1}`
+### Teaching demo frontend
+- URL: `http://localhost:8080/teaching-demo.html`
+- Week 4 tab now includes:
+  - two SSE clients on the same board
+  - connect/disconnect controls
+  - trigger buttons that send `X-Client-Id`
+  - side-by-side event logs to verify echo suppression
 
-Note: Week 1 examples are preserved historical context. Current Week 2 backend enforces JWT for board creation and derives owner from the authenticated user.
-
-### Week 2 quick check (current behavior)
-Seed users are created on startup with password `Password123!`:
-- `alice@kanban.local` (board admin)
-- `bob@kanban.local` (board member)
-- `guest@kanban.local` (board guest/read-only)
-
-Login:
+### Realtime quick check (two terminals)
+Login first:
 ```bash
 curl -X POST http://localhost:8080/api/v1/auth/login \
   -H 'Content-Type: application/json' \
   -d '{"email":"alice@kanban.local","password":"Password123!"}'
 ```
 
-Use returned access token:
+Terminal A subscribe:
 ```bash
-curl http://localhost:8080/api/v1/boards/1 \
+curl -N "http://localhost:8080/api/v1/boards/1/events?clientId=client-a" \
   -H 'Authorization: Bearer <ACCESS_TOKEN>'
 ```
 
-Refresh token:
+Terminal B subscribe:
 ```bash
-curl -X POST http://localhost:8080/api/v1/auth/refresh \
-  -H 'Content-Type: application/json' \
-  -d '{"refreshToken":"<REFRESH_TOKEN>"}'
+curl -N "http://localhost:8080/api/v1/boards/1/events?clientId=client-b" \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>'
 ```
 
-### Configuration notes
-- JWT settings: `app.jwt.*` in `src/main/resources/application.yml`
-- Allowed CORS origins: `app.security.cors.allowed-origins`
-- Security is stateless; protected endpoints require `Authorization: Bearer <token>`
+Trigger board event from client A:
+```bash
+curl -X POST http://localhost:8080/api/v1/columns/1/cards \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>' \
+  -H 'X-Client-Id: client-a' \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"Realtime demo card","description":"Week 4"}'
+```
+
+Expected behavior:
+- Terminal B receives `card.created` event.
+- Terminal A does not receive its own echoed event.
 
 ### Troubleshooting
-- `401 Unauthorized`: token missing/expired/invalid, or refresh token used for protected API calls
-- `403 Forbidden`: authenticated user lacks required board role
-- Flyway/schema errors: ensure migrations under `src/main/resources/db/migration` are valid and ordered
+- `401 Unauthorized`: missing/expired access token.
+- `403 Forbidden`: user lacks board membership permission.
+- `500` with Redis connection hints: ensure Redis is running and `spring.data.redis.*` points to it.
+- No SSE events: verify board access, `clientId`, and `app.realtime.redis-enabled=true`.

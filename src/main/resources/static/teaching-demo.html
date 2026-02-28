@@ -11,10 +11,12 @@
     <header class="hero">
         <p class="eyebrow">Spring Boot Teaching Companion</p>
         <h1>Kanban Weekly Capability Demo</h1>
-        <p class="subtitle">One page for classroom live demos of Week 1 and Week 2 behavior.</p>
+        <p class="subtitle">One page for classroom live demos of Week 1 to Week 4 behavior.</p>
         <div class="week-switch" role="tablist" aria-label="Week selector">
             <button id="tab-week1" class="week-tab active" data-week="week1" role="tab" aria-selected="true">Week 1</button>
             <button id="tab-week2" class="week-tab" data-week="week2" role="tab" aria-selected="false">Week 2</button>
+            <button id="tab-week3" class="week-tab" data-week="week3" role="tab" aria-selected="false">Week 3</button>
+            <button id="tab-week4" class="week-tab" data-week="week4" role="tab" aria-selected="false">Week 4</button>
         </div>
     </header>
 
@@ -96,6 +98,128 @@
                 <button type="submit">POST /api/v1/boards/{id}/members</button>
             </form>
             <pre id="week2-board-output" class="output">Board and membership responses appear here.</pre>
+        </article>
+    </section>
+
+    <section id="week3" class="week-panel" role="tabpanel" aria-labelledby="tab-week3">
+        <article class="card">
+            <h2>Boards + Columns (Search & Pagination)</h2>
+            <p>Requires Week 2 login first. Demonstrates paged board search and column CRUD setup.</p>
+            <form id="week3-board-search-form" class="stack">
+                <label>Board Search (q)
+                    <input id="week3-board-query" type="text" value="Week">
+                </label>
+                <label>Board ID
+                    <input id="week3-board-id" type="number" value="1" min="1" required>
+                </label>
+                <div class="inline-actions">
+                    <button type="button" id="week3-search-boards-btn">GET /api/v1/boards</button>
+                    <button type="button" id="week3-list-columns-btn">GET /api/v1/boards/{id}/columns</button>
+                </div>
+            </form>
+            <form id="week3-create-column-form" class="stack">
+                <label>New Column Name
+                    <input id="week3-column-name" type="text" value="Week3 Demo Column" required>
+                </label>
+                <button type="submit">POST /api/v1/boards/{id}/columns</button>
+            </form>
+            <pre id="week3-board-output" class="output">Week 3 board and column responses appear here.</pre>
+        </article>
+
+        <article class="card">
+            <h2>Cards + Comments + Optimistic Lock</h2>
+            <p>Create a card, update with version, then trigger a stale version conflict (409).</p>
+            <form id="week3-card-form" class="stack">
+                <label>Column ID
+                    <input id="week3-column-id" type="number" value="1" min="1" required>
+                </label>
+                <label>Card ID
+                    <input id="week3-card-id" type="number" value="" min="1" placeholder="auto-filled after create">
+                </label>
+                <label>Card Version
+                    <input id="week3-card-version" type="number" value="" min="0" placeholder="auto-filled after reads">
+                </label>
+                <label>Card Title
+                    <input id="week3-card-title" type="text" value="Week3 Card from UI" required>
+                </label>
+                <label>Description
+                    <input id="week3-card-description" type="text" value="Initial description">
+                </label>
+                <div class="inline-actions">
+                    <button type="button" id="week3-create-card-btn">POST card</button>
+                    <button type="button" id="week3-get-card-btn">GET card</button>
+                    <button type="button" id="week3-update-card-btn">PUT card</button>
+                    <button type="button" id="week3-stale-update-btn">Force stale update</button>
+                </div>
+                <button type="button" id="week3-delete-card-btn">DELETE card</button>
+            </form>
+            <form id="week3-comment-form" class="stack">
+                <label>Comment Body
+                    <input id="week3-comment-body" type="text" value="Week3 UI comment" required>
+                </label>
+                <div class="inline-actions">
+                    <button type="button" id="week3-create-comment-btn">POST comment</button>
+                    <button type="button" id="week3-list-comments-btn">GET comments</button>
+                </div>
+            </form>
+            <pre id="week3-card-output" class="output">Week 3 card/comment responses appear here.</pre>
+        </article>
+    </section>
+
+    <section id="week4" class="week-panel" role="tabpanel" aria-labelledby="tab-week4">
+        <article class="card">
+            <h2>Realtime Stream Setup (SSE)</h2>
+            <p>Open two clients on the same board and watch server events arrive in real time.</p>
+            <form id="week4-stream-form" class="stack">
+                <label>Board ID
+                    <input id="week4-board-id" type="number" value="1" min="1" required>
+                </label>
+                <label>Column ID (for event trigger)
+                    <input id="week4-column-id" type="number" value="1" min="1" required>
+                </label>
+                <label>Client A ID
+                    <input id="week4-client-a-id" type="text" value="client-a" required>
+                </label>
+                <label>Client B ID
+                    <input id="week4-client-b-id" type="text" value="client-b" required>
+                </label>
+                <div class="inline-actions">
+                    <button type="button" id="week4-connect-a-btn">Connect A</button>
+                    <button type="button" id="week4-connect-b-btn">Connect B</button>
+                    <button type="button" id="week4-connect-both-btn">Connect Both</button>
+                    <button type="button" id="week4-disconnect-all-btn">Disconnect All</button>
+                </div>
+            </form>
+            <div class="inline-actions">
+                <span class="badge offline" id="week4-client-a-state">Client A: Disconnected</span>
+                <span class="badge offline" id="week4-client-b-state">Client B: Disconnected</span>
+            </div>
+            <div class="dual-output">
+                <div>
+                    <h3>Client A Stream</h3>
+                    <pre id="week4-client-a-output" class="output">Client A events will appear here.</pre>
+                </div>
+                <div>
+                    <h3>Client B Stream</h3>
+                    <pre id="week4-client-b-output" class="output">Client B events will appear here.</pre>
+                </div>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Echo Suppression Demo</h2>
+            <p>Trigger a card event using one client ID. The same client stream should not receive the echoed event.</p>
+            <form id="week4-trigger-form" class="stack">
+                <label>Card Title Prefix
+                    <input id="week4-card-title-prefix" type="text" value="Week4 Realtime Card" required>
+                </label>
+                <div class="inline-actions">
+                    <button type="button" id="week4-create-from-a-btn">POST card as Client A</button>
+                    <button type="button" id="week4-create-from-b-btn">POST card as Client B</button>
+                    <button type="button" id="week4-clear-logs-btn">Clear Stream Logs</button>
+                </div>
+            </form>
+            <pre id="week4-action-output" class="output">Action results and expected behavior notes appear here.</pre>
         </article>
     </section>
 </main>

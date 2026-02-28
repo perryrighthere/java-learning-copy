@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,4 +40,6 @@ public class CardComment extends BaseEntity {
     @Column(nullable = false, columnDefinition = "text")
     private String body;
 
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 }

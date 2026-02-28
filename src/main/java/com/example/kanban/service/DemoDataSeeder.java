@@ -1,12 +1,19 @@
 package com.example.kanban.service;
 
 import com.example.kanban.domain.Board;
+import com.example.kanban.domain.BoardColumn;
+import com.example.kanban.domain.Card;
+import com.example.kanban.domain.CardComment;
 import com.example.kanban.domain.Membership;
 import com.example.kanban.domain.MembershipRole;
 import com.example.kanban.domain.User;
+import com.example.kanban.repository.BoardColumnRepository;
 import com.example.kanban.repository.BoardRepository;
+import com.example.kanban.repository.CardCommentRepository;
+import com.example.kanban.repository.CardRepository;
 import com.example.kanban.repository.MembershipRepository;
 import com.example.kanban.repository.UserRepository;
+import java.math.BigDecimal;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -22,6 +29,9 @@ public class DemoDataSeeder implements ApplicationRunner {
 
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final BoardColumnRepository boardColumnRepository;
+    private final CardRepository cardRepository;
+    private final CardCommentRepository cardCommentRepository;
     private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -41,6 +51,15 @@ public class DemoDataSeeder implements ApplicationRunner {
         seedMembership(board, alice, MembershipRole.ADMIN);
         seedMembership(board, bob, MembershipRole.MEMBER);
         seedMembership(board, gina, MembershipRole.GUEST);
+
+        BoardColumn todo = seedColumn(board, "To Do", BigDecimal.valueOf(100));
+        BoardColumn doing = seedColumn(board, "Doing", BigDecimal.valueOf(200));
+
+        Card firstCard = seedCard(todo, "Week 3 Sample Card", "Demonstrates CRUD, search, and optimistic locking.");
+        seedCard(doing, "Week 3 Review", "Card in second column for pagination/search demos.");
+
+        seedComment(firstCard, alice, "Remember to include version in card update requests.");
+        seedComment(firstCard, bob, "Soft deletes should hide rows from list endpoints.");
     }
 
     private User seedUser(String email, String displayName, String rawPassword) {
@@ -68,5 +87,41 @@ public class DemoDataSeeder implements ApplicationRunner {
 
         membership.setRole(role);
         membershipRepository.save(membership);
+    }
+
+    private BoardColumn seedColumn(Board board, String name, BigDecimal position) {
+        return boardColumnRepository.findFirstByBoardIdAndNameAndDeletedAtIsNull(board.getId(), name)
+            .map(existing -> {
+                existing.setPosition(position);
+                return boardColumnRepository.save(existing);
+            })
+            .orElseGet(() -> boardColumnRepository.save(BoardColumn.builder()
+                .board(board)
+                .name(name)
+                .position(position)
+                .build()));
+    }
+
+    private Card seedCard(BoardColumn column, String title, String description) {
+        return cardRepository.findFirstByColumnIdAndTitleAndDeletedAtIsNull(column.getId(), title)
+            .map(existing -> {
+                existing.setDescription(description);
+                return cardRepository.save(existing);
+            })
+            .orElseGet(() -> cardRepository.save(Card.builder()
+                .column(column)
+                .title(title)
+                .description(description)
+                .position(column.getPosition())
+                .build()));
+    }
+
+    private void seedComment(Card card, User author, String body) {
+        cardCommentRepository.findFirstByCardIdAndBodyAndDeletedAtIsNull(card.getId(), body)
+            .orElseGet(() -> cardCommentRepository.save(CardComment.builder()
+                .card(card)
+                .author(author)
+                .body(body)
+                .build()));
     }
 }

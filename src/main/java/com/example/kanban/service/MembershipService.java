@@ -25,7 +25,7 @@ public class MembershipService {
     private final UserService userService;
 
     public List<Membership> listByBoard(Long boardId) {
-        boardRepository.findById(boardId)
+        boardRepository.findByIdAndArchivedAtIsNull(boardId)
             .orElseThrow(() -> new ResourceNotFoundException("Board %d not found".formatted(boardId)));
         return membershipRepository.findByBoardIdOrderByIdAsc(boardId);
     }
@@ -33,7 +33,7 @@ public class MembershipService {
     @Transactional
     @CacheEvict(cacheNames = "board-role", key = "#boardId + ':' + #request.userId()")
     public Membership upsert(Long boardId, CreateMembershipRequest request) {
-        Board board = boardRepository.findById(boardId)
+        Board board = boardRepository.findByIdAndArchivedAtIsNull(boardId)
             .orElseThrow(() -> new ResourceNotFoundException("Board %d not found".formatted(boardId)));
         User user = userService.getById(request.userId());
 
@@ -51,7 +51,7 @@ public class MembershipService {
     @Transactional
     @CacheEvict(cacheNames = "board-role", key = "#boardId + ':' + #userId")
     public void remove(Long boardId, Long userId) {
-        Board board = boardRepository.findById(boardId)
+        Board board = boardRepository.findByIdAndArchivedAtIsNull(boardId)
             .orElseThrow(() -> new ResourceNotFoundException("Board %d not found".formatted(boardId)));
 
         if (board.getOwner().getId().equals(userId)) {
@@ -72,7 +72,7 @@ public class MembershipService {
         }
         return membershipRepository.findByBoardIdAndUserId(boardId, userId)
             .map(Membership::getRole)
-            .or(() -> boardRepository.findById(boardId)
+            .or(() -> boardRepository.findByIdAndArchivedAtIsNull(boardId)
                 .filter(board -> board.getOwner().getId().equals(userId))
                 .map(board -> MembershipRole.ADMIN));
     }

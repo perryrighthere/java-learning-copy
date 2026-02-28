@@ -51,6 +51,12 @@ h2 {
     margin: 0.4rem 0;
 }
 
+h3 {
+    margin: 0.3rem 0 0.45rem;
+    font-size: 0.96rem;
+    color: var(--ink);
+}
+
 .subtitle {
     margin: 0 0 1rem;
     color: var(--muted);
@@ -159,6 +165,24 @@ button:hover {
     font-size: 0.85rem;
 }
 
+.badge.offline {
+    border-color: #d6dde6;
+    color: #475569;
+    background: #f8fafc;
+}
+
+.badge.connecting {
+    border-color: #f9d8a8;
+    color: #9a3412;
+    background: #fff7ed;
+}
+
+.badge.live {
+    border-color: #a7f3d0;
+    color: #065f46;
+    background: #ecfdf5;
+}
+
 .output {
     margin: 0.7rem 0 0;
     border: 1px solid #dbe5ea;
@@ -171,6 +195,12 @@ button:hover {
     word-break: break-word;
     font-family: "Courier New", monospace;
     font-size: 0.84rem;
+}
+
+.dual-output {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
 }
 
 @keyframes rise {
@@ -201,5 +231,9 @@ button:hover {
     .week-tab {
         flex: 1;
         text-align: center;
+    }
+
+    .dual-output {
+        grid-template-columns: 1fr;
     }
 }

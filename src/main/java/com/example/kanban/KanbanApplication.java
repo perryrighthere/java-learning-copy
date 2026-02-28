@@ -2,6 +2,7 @@ package com.example.kanban;
 
 import com.example.kanban.config.AppSecurityProperties;
 import com.example.kanban.config.JwtProperties;
+import com.example.kanban.config.RealtimeProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,7 +13,7 @@ import org.springframework.cache.annotation.EnableCaching;
  */
 @SpringBootApplication
 @EnableCaching
-@EnableConfigurationProperties({JwtProperties.class, AppSecurityProperties.class})
+@EnableConfigurationProperties({JwtProperties.class, AppSecurityProperties.class, RealtimeProperties.class})
 public class KanbanApplication {
 
     public static void main(String[] args) {
