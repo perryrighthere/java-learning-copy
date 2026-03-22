@@ -5,6 +5,8 @@ import com.example.kanban.service.BoardColumnService;
 import com.example.kanban.web.dto.ColumnResponse;
 import com.example.kanban.web.dto.CreateColumnRequest;
 import com.example.kanban.web.dto.PagedResponse;
+import com.example.kanban.web.dto.ReorderColumnsRequest;
+import com.example.kanban.web.dto.ReorderColumnsResponse;
 import com.example.kanban.web.dto.UpdateColumnRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Tag(name = "Columns", description = "Board column CRUD with pagination and search")
 @RestController
@@ -75,6 +79,17 @@ public class BoardColumnController {
                                                  @Valid @RequestBody UpdateColumnRequest request) {
         BoardColumn column = boardColumnService.update(boardId, columnId, request);
         return ResponseEntity.ok(toResponse(column));
+    }
+
+    @Operation(summary = "Reorder all active columns for a board in one transaction")
+    @PatchMapping("/reorder")
+    @PreAuthorize("@boardAccessEvaluator.canWrite(#p0, authentication)")
+    public ResponseEntity<ReorderColumnsResponse> reorder(@PathVariable("boardId") Long boardId,
+                                                          @Valid @RequestBody ReorderColumnsRequest request) {
+        List<ColumnResponse> columns = boardColumnService.reorder(boardId, request).stream()
+            .map(this::toResponse)
+            .toList();
+        return ResponseEntity.ok(new ReorderColumnsResponse(columns));
     }
 
     @Operation(summary = "Soft-delete a column and all cards under it")

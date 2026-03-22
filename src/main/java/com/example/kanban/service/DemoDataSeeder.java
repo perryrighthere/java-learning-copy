@@ -57,6 +57,7 @@ public class DemoDataSeeder implements ApplicationRunner {
 
         Card firstCard = seedCard(todo, "Week 3 Sample Card", "Demonstrates CRUD, search, and optimistic locking.");
         seedCard(doing, "Week 3 Review", "Card in second column for pagination/search demos.");
+        seedCard(doing, "Week 5 Ordering Target", "Second target card so drag/drop demos can place a card between neighbors.");
 
         seedComment(firstCard, alice, "Remember to include version in card update requests.");
         seedComment(firstCard, bob, "Soft deletes should hide rows from list endpoints.");
@@ -112,8 +113,13 @@ public class DemoDataSeeder implements ApplicationRunner {
                 .column(column)
                 .title(title)
                 .description(description)
-                .position(column.getPosition())
+                .position(nextCardPosition(column.getId()))
                 .build()));
+    }
+
+    private BigDecimal nextCardPosition(Long columnId) {
+        BigDecimal maxPosition = cardRepository.findMaxPositionByColumnId(columnId);
+        return maxPosition == null ? BigDecimal.valueOf(100) : maxPosition.add(BigDecimal.valueOf(100));
     }
 
     private void seedComment(Card card, User author, String body) {

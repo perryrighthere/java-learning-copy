@@ -87,6 +87,8 @@ class Week4RealtimeIntegrationTest {
 
             assertThat(clientA.awaitEvent("connected", Duration.ofSeconds(5))).isNotNull();
             assertThat(clientB.awaitEvent("connected", Duration.ofSeconds(5))).isNotNull();
+            assertThat(clientA.awaitEvent("pending", Duration.ofSeconds(5))).isNotNull();
+            assertThat(clientB.awaitEvent("pending", Duration.ofSeconds(5))).isNotNull();
 
             mockMvc.perform(post("/api/v1/columns/{columnId}/cards", columnId)
                     .header("Authorization", "Bearer " + adminToken)

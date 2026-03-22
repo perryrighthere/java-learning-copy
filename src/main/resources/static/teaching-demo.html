@@ -9,16 +9,198 @@
 <body>
 <main class="page">
     <header class="hero">
-        <p class="eyebrow">Spring Boot Teaching Companion</p>
-        <h1>Kanban Weekly Capability Demo</h1>
-        <p class="subtitle">One page for classroom live demos of Week 1 to Week 4 behavior.</p>
-        <div class="week-switch" role="tablist" aria-label="Week selector">
-            <button id="tab-week1" class="week-tab active" data-week="week1" role="tab" aria-selected="true">Week 1</button>
-            <button id="tab-week2" class="week-tab" data-week="week2" role="tab" aria-selected="false">Week 2</button>
-            <button id="tab-week3" class="week-tab" data-week="week3" role="tab" aria-selected="false">Week 3</button>
-            <button id="tab-week4" class="week-tab" data-week="week4" role="tab" aria-selected="false">Week 4</button>
+        <div class="hero-copy">
+            <p class="eyebrow">Local-First Java Delivery Lab</p>
+            <h1>Kanban Realtime Collaboration Demo Studio</h1>
+            <p class="subtitle">A classroom-ready backend showcase covering schema design, JWT security, CRUD, realtime delivery, and conflict-safe collaboration rules.</p>
+            <div class="capability-ribbon" aria-label="Project strengths">
+                <span class="capability-pill">Java 21 + Spring Boot 3</span>
+                <span class="capability-pill">JWT + RBAC</span>
+                <span class="capability-pill">CRUD + Optimistic Locking</span>
+                <span class="capability-pill">SSE + Redis Relay</span>
+                <span class="capability-pill">Transactional Drag/Drop</span>
+            </div>
+            <div class="hero-actions">
+                <a class="action-link" href="/swagger-ui.html" target="_blank" rel="noreferrer">Open Swagger UI</a>
+                <a class="action-link muted" href="/v3/api-docs" target="_blank" rel="noreferrer">View OpenAPI JSON</a>
+                <button type="button" class="action-link action-link--button" data-target-week="week4">Jump to Realtime</button>
+                <button type="button" class="action-link action-link--button" data-target-week="week5">Jump to Conflict Demo</button>
+            </div>
+            <div class="week-switch" role="tablist" aria-label="Week selector">
+                <button id="tab-week1" class="week-tab active" data-week="week1" role="tab" aria-selected="true">Week 1</button>
+                <button id="tab-week2" class="week-tab" data-week="week2" role="tab" aria-selected="false">Week 2</button>
+                <button id="tab-week3" class="week-tab" data-week="week3" role="tab" aria-selected="false">Week 3</button>
+                <button id="tab-week4" class="week-tab" data-week="week4" role="tab" aria-selected="false">Week 4</button>
+                <button id="tab-week5" class="week-tab" data-week="week5" role="tab" aria-selected="false">Week 5</button>
+            </div>
         </div>
+        <aside class="hero-spotlight" aria-label="Current week spotlight">
+            <p class="section-kicker">Current spotlight</p>
+            <div class="spotlight-meta">
+                <span id="spotlight-week-label" class="spotlight-chip">Week 1</span>
+                <span id="spotlight-auth" class="spotlight-chip spotlight-chip--soft">Viewer mode</span>
+            </div>
+            <h2 id="spotlight-title">Skeleton, validation, and domain model</h2>
+            <p id="spotlight-summary" class="spotlight-summary">Boot the service, validate requests cleanly, and prove the schema is migration-driven from the start.</p>
+            <div class="progress-block">
+                <div class="progress-track" aria-hidden="true">
+                    <span id="spotlight-progress" class="progress-fill"></span>
+                </div>
+                <p id="spotlight-progress-copy" class="progress-copy">Delivery progress: Week 1 of 5.</p>
+            </div>
+            <div id="spotlight-tags" class="spotlight-tags" aria-label="Current week technologies"></div>
+            <ul id="spotlight-points" class="spotlight-points"></ul>
+        </aside>
     </header>
+
+    <section class="proof-grid" aria-label="Project overview">
+        <article class="proof-card">
+            <p class="section-kicker">What this proves</p>
+            <h2>Interview-grade backend signals</h2>
+            <div class="metric-grid">
+                <div class="metric-tile">
+                    <strong>5</strong>
+                    <span>Delivered weeks</span>
+                </div>
+                <div class="metric-tile">
+                    <strong>2</strong>
+                    <span>Conflict demos</span>
+                </div>
+                <div class="metric-tile">
+                    <strong>SSE</strong>
+                    <span>Live board updates</span>
+                </div>
+                <div class="metric-tile">
+                    <strong>409</strong>
+                    <span>Guided retry flows</span>
+                </div>
+            </div>
+        </article>
+
+        <article class="proof-card">
+            <p class="section-kicker">Architecture lane</p>
+            <h2>From request to collaboration response</h2>
+            <div class="flow-lane" aria-label="Architecture flow">
+                <span class="flow-node">REST + Validation</span>
+                <span class="flow-node">JWT + RBAC</span>
+                <span class="flow-node">Service Rules</span>
+                <span class="flow-node">JPA + Flyway</span>
+                <span class="flow-node">Realtime Broadcast</span>
+                <span class="flow-node">Conflict Guidance</span>
+            </div>
+            <p class="support-copy">Each week adds one production-style concern instead of replacing throwaway demo scaffolding.</p>
+        </article>
+
+        <article class="proof-card">
+            <p class="section-kicker">Demo route</p>
+            <h2>Best classroom storyline</h2>
+            <ol class="route-list">
+                <li>Start with Week 2 login to establish JWT and role-aware access.</li>
+                <li>Use Week 3 CRUD to show cards, versions, and paged data access.</li>
+                <li>Move to Week 4 to prove live board updates across two clients.</li>
+                <li>Finish with Week 5 reorder and conflict retries for collaboration depth.</li>
+            </ol>
+        </article>
+    </section>
+
+    <section class="studio-bar" aria-label="Current studio status">
+        <div class="studio-chip">
+            <span class="studio-label">Active week</span>
+            <strong id="active-week-name">Week 1</strong>
+        </div>
+        <div class="studio-chip">
+            <span class="studio-label">Auth state</span>
+            <strong id="hero-auth-summary">Not logged in</strong>
+        </div>
+        <div class="studio-chip">
+            <span class="studio-label">Best next step</span>
+            <strong id="next-step-copy">Create a user and verify the health endpoint.</strong>
+        </div>
+    </section>
+
+    <section class="workspace-grid" aria-label="Guided showcase workspace">
+        <article class="workspace-card workspace-card--controls">
+            <p class="section-kicker">Guided showcase</p>
+            <h2>Run the system from signup to collaboration conflict</h2>
+            <p class="support-copy">This workspace creates a fresh demo user, logs in, builds a board, seeds cards, and then lets you demonstrate move and retry behavior without guessing IDs.</p>
+
+            <form id="showcase-identity-form" class="stack">
+                <label>Demo Email
+                    <input id="showcase-email" type="email" required>
+                </label>
+                <label>Display Name
+                    <input id="showcase-display-name" type="text" required>
+                </label>
+                <label>Password
+                    <input id="showcase-password" type="password" minlength="8" required>
+                </label>
+                <label>Board Name
+                    <input id="showcase-board-name" type="text" required>
+                </label>
+            </form>
+
+            <div class="inline-actions">
+                <button type="button" id="showcase-generate-btn">Generate Fresh Demo Data</button>
+                <button type="button" id="showcase-create-user-btn">Create User</button>
+                <button type="button" id="showcase-login-btn">Login</button>
+                <button type="button" id="showcase-setup-btn">Run Full Setup</button>
+            </div>
+
+            <div class="inline-actions">
+                <button type="button" id="showcase-create-board-btn">Create Board</button>
+                <button type="button" id="showcase-seed-board-btn">Seed Columns + Cards</button>
+                <button type="button" id="showcase-comment-btn">Add Comment</button>
+                <button type="button" id="showcase-refresh-btn">Refresh Workspace</button>
+            </div>
+
+            <div class="inline-actions">
+                <button type="button" id="showcase-move-btn">Move Card</button>
+                <button type="button" id="showcase-conflict-btn">Run Stale Conflict</button>
+                <button type="button" id="showcase-open-week3-btn">Open CRUD View</button>
+                <button type="button" id="showcase-open-week5-btn">Open Collaboration View</button>
+            </div>
+
+            <pre id="showcase-output" class="output">Generate demo values, create a user, log in, then run the full setup to get a ready-made collaboration board.</pre>
+        </article>
+
+        <article class="workspace-card workspace-card--snapshot">
+            <p class="section-kicker">Live snapshot</p>
+            <h2>Current demo workspace</h2>
+            <div class="resource-grid" aria-label="Tracked resources">
+                <div class="resource-tile">
+                    <span class="resource-label">User</span>
+                    <strong id="showcase-user-summary">Not created yet</strong>
+                </div>
+                <div class="resource-tile">
+                    <span class="resource-label">Board</span>
+                    <strong id="showcase-board-summary">No board yet</strong>
+                </div>
+                <div class="resource-tile">
+                    <span class="resource-label">Columns</span>
+                    <strong id="showcase-column-summary">0</strong>
+                </div>
+                <div class="resource-tile">
+                    <span class="resource-label">Cards</span>
+                    <strong id="showcase-card-summary">0</strong>
+                </div>
+                <div class="resource-tile">
+                    <span class="resource-label">Comment</span>
+                    <strong id="showcase-comment-summary">Not added</strong>
+                </div>
+                <div class="resource-tile">
+                    <span class="resource-label">Move target</span>
+                    <strong id="showcase-move-summary">Not ready</strong>
+                </div>
+            </div>
+
+            <div id="showcase-board-view" class="board-lanes" aria-label="Board lanes preview">
+                <div class="lane lane--empty">
+                    <h3>No board loaded</h3>
+                    <p>Create a board and seed cards to see the collaboration story rendered here.</p>
+                </div>
+            </div>
+        </article>
+    </section>
 
     <section id="week1" class="week-panel active" role="tabpanel" aria-labelledby="tab-week1">
         <article class="card">
@@ -169,7 +351,7 @@
     <section id="week4" class="week-panel" role="tabpanel" aria-labelledby="tab-week4">
         <article class="card">
             <h2>Realtime Stream Setup (SSE)</h2>
-            <p>Open two clients on the same board and watch server events arrive in real time.</p>
+            <p>Open two clients on the same board and watch `connected` then `pending` events before realtime board updates.</p>
             <form id="week4-stream-form" class="stack">
                 <label>Board ID
                     <input id="week4-board-id" type="number" value="1" min="1" required>
@@ -220,6 +402,58 @@
                 </div>
             </form>
             <pre id="week4-action-output" class="output">Action results and expected behavior notes appear here.</pre>
+        </article>
+    </section>
+
+    <section id="week5" class="week-panel" role="tabpanel" aria-labelledby="tab-week5">
+        <article class="card">
+            <h2>Column Drag/Drop (Transactional Reorder)</h2>
+            <p>Send the full ordered column ID list to persist a drag/drop result in one write transaction.</p>
+            <form id="week5-column-form" class="stack">
+                <label>Board ID
+                    <input id="week5-board-id" type="number" value="1" min="1" required>
+                </label>
+                <label>Ordered Column IDs (comma separated)
+                    <input id="week5-column-order" type="text" value="2,1" placeholder="e.g. 3,1,2" required>
+                </label>
+                <div class="inline-actions">
+                    <button type="button" id="week5-list-columns-btn">GET columns</button>
+                    <button type="submit">PATCH reorder</button>
+                </div>
+            </form>
+            <pre id="week5-column-output" class="output">Fetch columns first, then submit a new ordered ID list.</pre>
+        </article>
+
+        <article class="card">
+            <h2>Card Move + Conflict Guidance</h2>
+            <p>Fresh seed data usually starts with card `1` moving from column `1` into column `2` between cards `2` and `3`. If your DB already has data, use Week 3 list endpoints to confirm IDs first.</p>
+            <form id="week5-move-form" class="stack">
+                <label>Current Column ID
+                    <input id="week5-source-column-id" type="number" value="1" min="1" required>
+                </label>
+                <label>Target Column ID
+                    <input id="week5-target-column-id" type="number" value="2" min="1" required>
+                </label>
+                <label>Card ID
+                    <input id="week5-card-id" type="number" value="1" min="1" required>
+                </label>
+                <label>Card Version
+                    <input id="week5-card-version" type="number" value="" min="0" placeholder="load with GET card">
+                </label>
+                <label>Previous Card ID
+                    <input id="week5-previous-card-id" type="number" value="2" min="1">
+                </label>
+                <label>Next Card ID
+                    <input id="week5-next-card-id" type="number" value="3" min="1">
+                </label>
+                <div class="inline-actions">
+                    <button type="button" id="week5-get-card-btn">GET card</button>
+                    <button type="button" id="week5-list-target-cards-btn">GET target cards</button>
+                    <button type="button" id="week5-move-card-btn">PATCH move</button>
+                    <button type="button" id="week5-stale-move-btn">Force stale move</button>
+                </div>
+            </form>
+            <pre id="week5-move-output" class="output">Load the card snapshot, then move it with neighbor IDs. Run one successful move before forcing a stale conflict.</pre>
         </article>
     </section>
 </main>

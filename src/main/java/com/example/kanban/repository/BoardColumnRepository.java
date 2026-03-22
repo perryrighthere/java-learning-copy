@@ -2,6 +2,7 @@ package com.example.kanban.repository;
 
 import com.example.kanban.domain.BoardColumn;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,8 @@ public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> 
     Optional<BoardColumn> findByIdAndBoardIdAndDeletedAtIsNull(Long id, Long boardId);
 
     Optional<BoardColumn> findFirstByBoardIdAndNameAndDeletedAtIsNull(Long boardId, String name);
+
+    List<BoardColumn> findByBoardIdAndDeletedAtIsNullOrderByPositionAscIdAsc(Long boardId);
 
     @Query("""
         select c.board.id

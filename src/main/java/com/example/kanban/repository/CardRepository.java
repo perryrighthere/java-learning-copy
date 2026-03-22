@@ -3,6 +3,7 @@ package com.example.kanban.repository;
 import com.example.kanban.domain.Card;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Optional<Card> findByIdAndColumnIdAndDeletedAtIsNull(Long id, Long columnId);
 
     Optional<Card> findFirstByColumnIdAndTitleAndDeletedAtIsNull(Long columnId, String title);
+
+    List<Card> findByColumnIdAndDeletedAtIsNullOrderByPositionAscIdAsc(Long columnId);
 
     @Query("""
         select c.column.board.id

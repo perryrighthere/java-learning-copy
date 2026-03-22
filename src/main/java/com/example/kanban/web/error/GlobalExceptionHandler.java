@@ -2,6 +2,7 @@ package com.example.kanban.web.error;
 
 import jakarta.validation.ConstraintViolationException;
 import io.jsonwebtoken.JwtException;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -63,13 +64,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OptimisticLockConflictException.class)
     public ProblemDetail handleOptimisticConflict(OptimisticLockConflictException ex) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        pd.setProperty("errorCode", ex.errorCode());
+        pd.setProperty("retryable", ex.retryable());
+        pd.setProperty("guidance", ex.guidance());
         pd.setProperty("latest", ex.latestResource());
         return pd;
     }
 
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     public ProblemDetail handleOptimisticFailure(ObjectOptimisticLockingFailureException ex) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, "Resource was updated by another request");
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, "Resource was updated by another request");
+        pd.setProperty("errorCode", "optimistic_lock_conflict");
+        pd.setProperty("retryable", true);
+        pd.setProperty("guidance", List.of(
+            "Fetch the latest resource snapshot before retrying.",
+            "Confirm the user's intended change against the newest state.",
+            "Retry the request with the current version."
+        ));
+        return pd;
     }
 
     @ExceptionHandler(Exception.class)

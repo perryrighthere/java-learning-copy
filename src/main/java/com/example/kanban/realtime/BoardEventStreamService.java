@@ -11,6 +11,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Service
 public class BoardEventStreamService {
 
+    private static final String EVENT_CONNECTED = "connected";
+    private static final String EVENT_PENDING = "pending";
+
     private final long emitterTimeoutMs;
     private final Map<Long, Map<String, Subscriber>> subscribersByBoard = new ConcurrentHashMap<>();
 
@@ -34,6 +37,7 @@ public class BoardEventStreamService {
         emitter.onError(ex -> remove(boardId, sessionId));
 
         sendConnectedEvent(boardId, subscriber);
+        sendPendingEvent(boardId, subscriber);
         return emitter;
     }
 
@@ -64,10 +68,28 @@ public class BoardEventStreamService {
     private void sendConnectedEvent(Long boardId, Subscriber subscriber) {
         try {
             subscriber.emitter().send(
+                    SseEmitter.event()
+                        .id(UUID.randomUUID().toString())
+                        .name(EVENT_CONNECTED)
+                        .data(Map.of("boardId", boardId, "clientId", subscriber.clientId()))
+            );
+        } catch (IOException ex) {
+            remove(boardId, subscriber.sessionId());
+            subscriber.emitter().completeWithError(ex);
+        }
+    }
+
+    private void sendPendingEvent(Long boardId, Subscriber subscriber) {
+        try {
+            subscriber.emitter().send(
                 SseEmitter.event()
                     .id(UUID.randomUUID().toString())
-                    .name("connected")
-                    .data(Map.of("boardId", boardId, "clientId", subscriber.clientId()))
+                    .name(EVENT_PENDING)
+                    .data(Map.of(
+                        "boardId", boardId,
+                        "clientId", subscriber.clientId(),
+                        "status", "waiting_for_board_events"
+                    ))
             );
         } catch (IOException ex) {
             remove(boardId, subscriber.sessionId());
